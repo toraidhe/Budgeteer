@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Budgeteer.Data.ViewModels.Account
 {
@@ -8,6 +9,14 @@ namespace Budgeteer.Data.ViewModels.Account
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]

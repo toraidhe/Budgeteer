@@ -36,8 +36,7 @@ namespace Budgeteer.Services
             emailContainer.Subject = subject;
             emailContainer.Body = new BodyBuilder() {HtmlBody = message }.ToMessageBody();
 
-            emailContainer.Send();
-            return Task.FromResult(0);
+            return emailContainer.SendAsync();
         }
 
         public Task SendSmsAsync(string number, string message)

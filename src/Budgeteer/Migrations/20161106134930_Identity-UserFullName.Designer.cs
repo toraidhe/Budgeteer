@@ -8,9 +8,10 @@ using Budgeteer.Data.DbContext;
 namespace Budgeteer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161106134930_Identity-UserFullName")]
+    partial class IdentityUserFullName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -54,8 +55,6 @@ namespace Budgeteer.Migrations
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("FirstName");
-
-                    b.Property<bool>("IsActive");
 
                     b.Property<string>("LastName");
 

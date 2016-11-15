@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Budgeteer.Base;
 using Budgeteer.Data.Models;
 using Budgeteer.Data.ViewModels.Manage;
 using Budgeteer.Services;
@@ -19,8 +20,8 @@ namespace Budgeteer.Controllers
     [RequireHttps]
     public class ManageController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
@@ -30,10 +31,10 @@ namespace Budgeteer.Controllers
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory) 
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _userManager = userManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
@@ -349,14 +350,6 @@ namespace Budgeteer.Controllers
 
         #region Helpers
 
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-
         public enum ManageMessageId
         {
             AddPhoneSuccess,
@@ -369,11 +362,18 @@ namespace Budgeteer.Controllers
             Error
         }
 
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
         }
-
         #endregion
     }
 }

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Budgeteer.Data.Claims;
 using Budgeteer.Data.DbContext;
 using Budgeteer.Data.Models;
 using Budgeteer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +57,7 @@ namespace Budgeteer
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, AppClaimsPrincipalFactory>();
             services.AddMvc();
 
             services.Configure<MvcOptions>(options =>
@@ -70,7 +72,7 @@ namespace Budgeteer
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.Configure<Budgeteer.Services.Smtp.EmailAccounts>(Configuration.GetSection("EmailAccounts"));
+            services.Configure<Services.Smtp.EmailAccounts>(Configuration.GetSection("EmailAccounts"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,7 +82,7 @@ namespace Budgeteer
             loggerFactory.AddDebug();
 
             app.UseApplicationInsightsRequestTelemetry();
-
+            app.UseClaimsTransformation(new ClaimsTransformationOptions() {Transformer = new AppClaimsTransformer()});
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -93,7 +95,7 @@ namespace Budgeteer
             }
 
             app.UseApplicationInsightsExceptionTelemetry();
-
+            app.UseStatusCodePages();
             app.UseStaticFiles();
 
             app.UseIdentity();
@@ -101,8 +103,14 @@ namespace Budgeteer
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "areaRoute",
+                    template: "{area:exists}/{controller}/{action}/{id?}",
+                    defaults: new {action = "Index"});
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                
             });
         }
     }

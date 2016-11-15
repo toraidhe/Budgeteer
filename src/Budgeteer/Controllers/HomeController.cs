@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Budgeteer.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budgeteer.Controllers
 {
     [RequireHttps]
-    public class HomeController : Controller
+    public class HomeController : BudgeteerConroller<HomeController>
     {
         public IActionResult Index()
         {
@@ -24,6 +25,13 @@ namespace Budgeteer.Controllers
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
+
+            return View();
+        }
+
+        public IActionResult Help()
+        {
+            ViewData["Message"] = "Help page.";
 
             return View();
         }

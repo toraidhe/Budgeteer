@@ -1,0 +1,43 @@
+﻿@model Budgeteer.Areas.Admin.ViewModels.Users.ListUsersViewModel
+@using System.Threading.Tasks
+@using Budgeteer.Areas.Admin.ViewModels.Users
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h2>@ViewData["Title"].</h2>
+
+<p class="text-success">@ViewData["StatusMessage"]</p>
+<p class="text-success">@ViewData["StatusMessage"]</p>
+@if (Model.ApplicationUsers.Count > 0)
+{
+    <h4>Configured Users</h4>
+    <table class="table">
+        <tbody>
+        @foreach (var user in Model.ApplicationUsers)
+        {
+            <tr>
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>
+                    <form asp-area="Admin" asp-controller="Users" asp-action="ResetPassword" method="post" class="form-horizontal">
+                        <div>
+                            <input asp-for="@user.Email" name="email" type="hidden" />
+                            <input type="submit" class="btn btn-default" value="Reset Password" title="Remove the user @user.FullName from the system." />
+                        </div>
+                    </form>
+                </td>
+                <td>
+                    <form asp-area="Admin" asp-controller="Users" asp-action="Deactivate" method="post" class="form-horizontal">
+                        <div>
+                            <input asp-for="@user" name="ApplicationRole" type="hidden" />
+                            <input type="submit" class="btn btn-default" value="Remove" title="Remove the user @user.FullName from the system." />
+                        </div>
+                    </form>
+
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

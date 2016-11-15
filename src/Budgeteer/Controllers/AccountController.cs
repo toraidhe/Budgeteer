@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Budgeteer.Base;
 using Budgeteer.Data.Models;
 using Budgeteer.Data.ViewModels.Account;
 using Budgeteer.Services;
@@ -22,8 +23,8 @@ namespace Budgeteer.Controllers
     [RequireHttps]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
@@ -35,8 +36,8 @@ namespace Budgeteer.Controllers
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _userManager = userManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -110,7 +111,7 @@ namespace Budgeteer.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, LastName = model.LastName, FirstName = model.FirstName, IsActive = true};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -442,15 +443,6 @@ namespace Budgeteer.Controllers
         }
 
         #region Helpers
-
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
@@ -468,6 +460,13 @@ namespace Budgeteer.Controllers
             }
         }
 
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
         #endregion
     }
 }
